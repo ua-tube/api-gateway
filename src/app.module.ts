@@ -18,6 +18,8 @@ import { AppController } from './app.controller';
         VIDEO_MANAGER_SVC_ORIGIN: Joi.string().uri(),
         VIDEO_PROCESSOR_SVC_ORIGIN: Joi.string().uri(),
         VIDEO_STORE_SVC_ORIGIN: Joi.string().uri(),
+        HISTORY_SVC_ORIGIN: Joi.string().uri(),
+        SEARCH_SVC_ORIGIN: Joi.string().uri(),
       }),
     }),
   ],

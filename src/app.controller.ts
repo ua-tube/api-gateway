@@ -2,8 +2,8 @@ import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  @Get('health')
+  @Get('/api/gateway/health')
   ping(): string {
-    return "pong";
+    return 'pong';
   }
 }

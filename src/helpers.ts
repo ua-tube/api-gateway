@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { serviceAndEnvNameKeyPair } from './constants';
+import { serviceNames } from './constants';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
@@ -7,23 +7,23 @@ export const configureEndpointsProxy = (
   app: NestExpressApplication,
   configService: ConfigService,
 ) => {
-  const proxyItems = serviceAndEnvNameKeyPair.map((keys) => [
-    keys[0],
-    configService.getOrThrow<string>(keys[1]),
-  ]);
+  const proxyItems = new Map(serviceNames.map((name): [string, string] => [
+    name,
+    configService.getOrThrow<string>(`${name.toUpperCase().replaceAll('-', '_')}_SVC_ORIGIN`),
+  ]));
 
-  proxyItems.forEach((keys) => {
+  proxyItems.forEach((serviceOrigin, serviceName) => {
     app.use(
-      `/api/${keys[0]}/health`,
+      `/api/${serviceName}/health`,
       createProxyMiddleware({
-        target: `${keys[1]}/api/v1/health`,
+        target: `${serviceOrigin}/api/v1/health`,
         changeOrigin: true,
       }),
     );
     app.use(
-      `/api/${keys[0]}`,
+      `/api/${serviceName}`,
       createProxyMiddleware({
-        target: `${keys[1]}/api/v1/${keys[0]}`,
+        target: `${serviceOrigin}/api/v1/${serviceName}`,
         changeOrigin: true,
       }),
     );

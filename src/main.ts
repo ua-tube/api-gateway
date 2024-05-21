@@ -11,7 +11,11 @@ async function bootstrap() {
   app.set('trust proxy', true);
 
   const configService = app.get(ConfigService);
-  app.enableCors({ origin: configService.getOrThrow<string>('CLIENT_URL') });
+  app.enableCors({
+    origin: [configService.getOrThrow<string>('CLIENT_URL')],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true
+  });
 
   configureEndpointsProxy(app, configService);
 

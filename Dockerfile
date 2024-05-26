@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
@@ -12,18 +12,20 @@ RUN npm run build
 
 FROM node:20.11.0-slim
 
-RUN apt update && apt install libssl-dev dumb-init -y --no-install-recommends
+RUN apt update && apt install libssl-dev -y --no-install-recommends
 
 WORKDIR /app
 
+COPY --chown=node:node --from=build /app/entrypoint.sh entrypoint.sh
 COPY --chown=node:node --from=build /app/dist ./dist
 COPY --chown=node:node --from=build /app/.env .env
 COPY --chown=node:node --from=build /app/package*.json ./
 
-RUN npm install --omit=dev
+RUN chmod +x entrypoint.sh
+RUN npm install --omit=dev --legacy-peer-deps
 
 ENV NODE_ENV production
 
-EXPOSE 8000
+EXPOSE $HTTP_PORT
 
-CMD ["dumb-init", "node", "/app/dist/main"]
+CMD ["./entrypoint.sh"]

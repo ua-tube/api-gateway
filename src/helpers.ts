@@ -7,8 +7,8 @@ export const configureEndpointsProxy = (
   app: NestExpressApplication,
   configService: ConfigService,
 ) => {
-  servicesAndEndpoints.forEach(item => {
-    item[1].forEach(coreRoute => {
+  servicesAndEndpoints.forEach((item) => {
+    item[1].forEach((coreRoute) => {
       app.use(
         `/api/${coreRoute}`,
         createProxyMiddleware({
@@ -16,6 +16,6 @@ export const configureEndpointsProxy = (
           changeOrigin: true,
         }),
       );
-    })
+    });
   });
 };

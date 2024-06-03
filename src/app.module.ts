@@ -2,6 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { AppController } from './app.controller';
+import {
+  ThrottlerGuard,
+  ThrottlerModule,
+  ThrottlerStorage,
+} from '@nestjs/throttler';
+import { Request } from 'express';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -21,7 +28,20 @@ import { AppController } from './app.controller';
         SEARCH_SVC_ORIGIN: Joi.string().uri(),
       }),
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 1000,
+        limit: 3,
+        ignoreUserAgents: [/google/, /bing/],
+      },
+    ]),
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -14,8 +14,9 @@ async function bootstrap() {
   app.enableCors({
     origin: configService.getOrThrow<string>('CLIENT_URL').split(','),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    credentials: true
+    credentials: true,
   });
+  app.disable('x-powered-by');
 
   configureEndpointsProxy(app, configService);
 

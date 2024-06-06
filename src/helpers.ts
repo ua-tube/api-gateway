@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { servicesAndEndpoints } from './constants';
+import { servicesAndEndpoints, servicesAndWs } from './constants';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
@@ -17,5 +17,21 @@ export const configureEndpointsProxy = (
         }),
       );
     });
+  });
+};
+
+export const configureWsProxy = (
+  app: NestExpressApplication,
+  configService: ConfigService,
+) => {
+  servicesAndWs.forEach((item) => {
+    app.use(
+      item[1],
+      createProxyMiddleware({
+        target: `${configService.getOrThrow<string>(item[0])}${item[1]}`,
+        changeOrigin: true,
+        ws: true,
+      }),
+    );
   });
 };

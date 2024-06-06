@@ -5,10 +5,8 @@ import { AppController } from './app.controller';
 import {
   ThrottlerGuard,
   ThrottlerModule,
-  ThrottlerStorage,
 } from '@nestjs/throttler';
-import { Request } from 'express';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [

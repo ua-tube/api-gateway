@@ -8,3 +8,8 @@ export const servicesAndEndpoints: [string, string[]][] = [
   ['HISTORY_SVC_ORIGIN', ['history']],
   ['SEARCH_SVC_ORIGIN', ['search']]
 ];
+
+export const servicesAndWs: [string, string][] = [
+  ['SUBSCRIPTIONS_SVC_ORIGIN', '/notifications'],
+  ['VIDEO_MANAGER_SVC_ORIGIN', '/video-manager'],
+];

@@ -26,9 +26,9 @@ export const configureWsProxy = (
 ) => {
   servicesAndWs.forEach((item) => {
     app.use(
-      item[1],
+      `/socket/${item[1]}`,
       createProxyMiddleware({
-        target: `${configService.getOrThrow<string>(item[0])}${item[1]}`,
+        target: configService.getOrThrow<string>(item[0]),
         changeOrigin: true,
         ws: true,
       }),

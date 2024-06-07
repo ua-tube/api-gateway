@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { servicesAndEndpoints, servicesAndWs } from './constants';
+import { servicesAndEndpoints } from './constants';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
@@ -14,24 +14,13 @@ export const configureEndpointsProxy = (
         createProxyMiddleware({
           target: `${configService.getOrThrow<string>(item[0])}/api/v1/${coreRoute}`,
           changeOrigin: true,
+          on: {
+            proxyReq: (proxyRes, _, res) => {
+              res.on('close', () => proxyRes.destroy());
+            },
+          },
         }),
       );
     });
-  });
-};
-
-export const configureWsProxy = (
-  app: NestExpressApplication,
-  configService: ConfigService,
-) => {
-  servicesAndWs.forEach((item) => {
-    app.use(
-      `/socket/${item[1]}`,
-      createProxyMiddleware({
-        target: configService.getOrThrow<string>(item[0]),
-        changeOrigin: true,
-        ws: true,
-      }),
-    );
   });
 };

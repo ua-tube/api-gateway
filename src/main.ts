@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Logger } from '@nestjs/common';
-import { configureEndpointsProxy, configureWsProxy } from './helpers';
+import { configureEndpointsProxy } from './helpers';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -19,7 +19,6 @@ async function bootstrap() {
   app.disable('x-powered-by');
 
   configureEndpointsProxy(app, configService);
-  configureWsProxy(app, configService);
 
   await app.listen(
     configService.get<number>('HTTP_PORT'),
